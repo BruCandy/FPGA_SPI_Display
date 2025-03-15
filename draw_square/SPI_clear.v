@@ -15,7 +15,7 @@ module SPI_clear (
     parameter WRITE_RAM     = 8'h2C;
 
 
-    reg [3:0]  r_state   = 0;
+    reg [2:0]  r_state   = 0;
     reg        r_we_cmd  = 0;
     reg        r_we_data = 0;
     reg [7:0]  r_cmd;
@@ -25,9 +25,8 @@ module SPI_clear (
     reg        r_need_delay = 0; 
     reg [8:0]  r_ycnt = 0;
     reg [11:0] r_rcnt = 0;
-    reg        r_state_column = 0;
-    reg        r_state_page = 0;
-    reg        r_state_ram  = 0;
+    reg [2:0]  r_state_column = 0;
+    reg [2:0]  r_state_page = 0;
 
     wire w_done_cmd;
     wire w_done_data;
@@ -71,9 +70,12 @@ module SPI_clear (
         if (i_rst) begin
             r_state   <= 0;
             r_done    <= 0;
+            r_rcnt    <= 0;
+            r_ycnt    <= 0;
             r_we_cmd  <= 0;
             r_we_data <= 0;
-            r_need_delay <= 0;
+            r_state_column <= 0;
+            r_state_page <= 0;
         end else begin
                 r_done    <= 0;
                 if (r_ycnt == HEIGHT) begin
@@ -84,7 +86,6 @@ module SPI_clear (
                         0: begin // 初期状態 & SWREST準備
                             r_we_cmd     <= 0;
                             r_we_data    <= 0;
-                            r_need_delay <= 0;
                             r_done       <= 0;
                             if (i_start) begin
                                 r_dc         <= 0;
@@ -94,20 +95,20 @@ module SPI_clear (
                                 r_state      <= 1;
                             end
                         end
-                        1: begin // SET_COLMN_cmd送信中 & SET_COLMN_data準備
+                        1: begin // SET_COLMN_cmd送信中 & SET_COLMN_data準備と送信
                             r_we_cmd    <= 0;
                             r_we_data   <= 0;
-                            r_dc        <= 1;
                             case (r_state_column)
                                 0: begin
                                     if (w_done_cmd) begin
+                                        r_dc        <= 1;
                                         r_state_column <= 1;
                                     end
                                 end
                                 1: begin
                                     r_we_cmd        <= 0;
                                     r_we_data       <= 1;
-                                    r_data          <= 8'h00;
+                                    r_data          <= 0 >> 8;
                                     r_state_column  <= 2;
                                 end
                                 2: begin
@@ -116,7 +117,7 @@ module SPI_clear (
                                     if (w_done_data) begin
                                         r_we_cmd        <= 0;
                                         r_we_data       <= 1;
-                                        r_data          <= 8'h00;
+                                        r_data          <= 0 & 8'hff;
                                         r_state_column  <= 3;
                                     end
                                 end
@@ -126,7 +127,7 @@ module SPI_clear (
                                     if (w_done_data) begin
                                         r_we_cmd        <= 0;
                                         r_we_data       <= 1;
-                                        r_data          <= 8'h01;
+                                        r_data          <= (WIDTH-1) >> 8;
                                         r_state_column  <= 4;
                                     end
                                 end
@@ -136,38 +137,43 @@ module SPI_clear (
                                     if (w_done_data) begin
                                         r_we_cmd        <= 0;
                                         r_we_data       <= 1;
-                                        r_data          <= 8'h3F;
+                                        r_data          <= (WIDTH-1) & 8'hff;
                                         r_state_column  <= 5;
                                     end
                                 end
                                 5: begin
                                     r_we_cmd    <= 0;
                                     r_we_data   <= 0;
-                                    if (w_done_cmd) begin
+                                    if (w_done_data) begin
                                         r_state_column <= 0;
                                         r_state <= 2;
                                     end
                                 end
                             endcase
                         end
-                        2: begin // SET_COLMN_data送信中 & SET_PAGE_cmd準備
-                            r_we_cmd    <= 0;
+                        2: begin // SET_PAGE_cmd準備
+                            // r_we_cmd    <= 0;
+                            // r_we_data   <= 0;
+                            // if (w_done_cmd) begin
+                            //     r_dc        <= 0;
+                            //     r_we_cmd    <= 1;
+                            //     r_we_data   <= 0;
+                            //     r_cmd       <= SET_PAGE;
+                            //     r_state     <= 3;
+                            // end
+                            r_dc        <= 0;
+                            r_we_cmd    <= 1;
                             r_we_data   <= 0;
-                            if (w_done_cmd) begin
-                                r_dc        <= 0;
-                                r_we_cmd    <= 1;
-                                r_we_data   <= 0;
-                                r_cmd       <= SET_PAGE;
-                                r_state     <= 3;
-                            end
+                            r_cmd       <= SET_PAGE;
+                            r_state     <= 3;
                         end
-                        3: begin // SET_PAGE_cmd送信中 & SET_PAGE_data準備
+                        3: begin // SET_PAGE_cmd送信中 & SET_PAGE_data準備と送信
                             r_we_cmd    <= 0;
                             r_we_data   <= 0;
-                            r_dc        <= 1;
                             case (r_state_page)
                                 0: begin
                                     if (w_done_cmd) begin
+                                        r_dc        <= 1;
                                         r_state_page <= 1;
                                     end
                                 end
@@ -210,49 +216,54 @@ module SPI_clear (
                                 5: begin
                                     r_we_cmd    <= 0;
                                     r_we_data   <= 0;
-                                    if (w_done_cmd) begin
+                                    if (w_done_data) begin
                                         r_state_page <= 0;
                                         r_state <= 4;
                                     end
                                 end
                         endcase
                     end
-                    4: begin // SET_PAGE_data送信中 & WRITE_RAM_cmd準備
-                        r_we_cmd    <= 0;
+                    4: begin // WRITE_RAM_cmd準備
+                        // r_we_cmd    <= 0;
+                        // r_we_data   <= 0;
+                        // if (w_done_cmd) begin
+                        //     r_dc        <= 0;
+                        //     r_we_cmd    <= 1;
+                        //     r_we_data   <= 0;
+                        //     r_cmd       <= WRITE_RAM;
+                        //     r_state     <= 5;
+                        // end
+                        r_dc        <= 0;
+                        r_we_cmd    <= 1;
                         r_we_data   <= 0;
-                        if (w_done_cmd) begin
-                            r_dc        <= 0;
-                            r_we_cmd    <= 1;
-                            r_we_data   <= 0;
-                            r_cmd       <= WRITE_RAM;
-                            r_state     <= 5;
-                        end
+                        r_cmd       <= WRITE_RAM;
+                        r_state     <= 5;
                     end
                     5: begin // WRITE_RAM_cmd送信中 & WRITE_RAM_data準備と送信
                         r_we_cmd    <= 0;
                         r_we_data   <= 0;
-                        r_dc        <= 1;
-                        if (r_rcnt == 3840 - 1) begin
+                        if (r_rcnt == (WIDTH*2*8) - 1) begin
                             if (w_done_data) begin
                                 r_we_cmd    <= 0;
                                 r_we_data   <= 0;
+                                r_rcnt      <= 0;
                                 r_state     <= 6;
                             end
                         end else begin
-                            if (w_done_data) begin
+                            if (w_done_cmd) begin
+                                r_dc          <= 1;
                                 r_we_cmd      <= 0;
                                 r_we_data     <= 1;
                                 r_data        <= 8'b00000000;
-                                r_state       <= 6;
+                                r_rcnt        <= r_rcnt + 1'b1;
                             end
                         end
                     end
                     6: begin // FIN
-                        r_done  <= 1;
                         r_state <= 0;
+                        r_ycnt <= r_ycnt + 8;
                     end
                     endcase
-                r_ycnt <= r_ycnt + 8;
                 end
         end
     end
