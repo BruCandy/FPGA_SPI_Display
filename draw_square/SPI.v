@@ -1,22 +1,23 @@
-module SPI_top(
+module SPI(
     input wire i_clk,
     input wire i_rst,
     output wire o_mosi,
     output wire o_cs,
     output wire o_dc,
     output wire o_rst,
-    output wire o_done
+    output wire o_clk,
+    output wire o_led
 );
 
     reg r_state = 0;
-    reg       r_init_start = 1;
+    reg r_init_start;
     reg r_done = 0;
 
     wire      w_init_done;
 
     parameter DELAY = 2_700_000; 
 
-    assign o_done = r_done;
+    assign o_led = i_rst;
 
     SPI_init # (
         .DELAY (DELAY)
@@ -30,7 +31,9 @@ module SPI_top(
         .o_done     (w_init_done)
     );
 
-    assign o_rst = i_rst;
+    assign w_rst = ~i_rst;
+    assign o_rst = w_rst;
+    assign o_clk = i_clk;
 
     always @(posedge i_clk or posedge i_rst) begin
         if (i_rst) begin
@@ -42,7 +45,6 @@ module SPI_top(
                     r_init_start <= 0;
                     if (w_init_done) begin
                         r_state <= 1;
-                        r_done <= 1;
                     end
                 end
                 1: begin // 終了
