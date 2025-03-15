@@ -15,7 +15,7 @@ module SPI_clear (
     parameter WRITE_RAM     = 8'h2C;
 
 
-    reg [2:0]  r_state   = 0;
+    reg [3:0]  r_state   = 0;
     reg        r_we_cmd  = 0;
     reg        r_we_data = 0;
     reg [7:0]  r_cmd;
@@ -79,11 +79,12 @@ module SPI_clear (
         end else begin
                 r_done    <= 0;
                 if (r_ycnt == HEIGHT) begin
+                    r_state <= 0;
                     r_done <= 1;
                     r_ycnt <= 0;
                 end else begin
                     case (r_state)
-                        0: begin // 初期状態 & SWREST準備
+                        0: begin // 1周目のみの初期状態 & SWREST準備
                             r_we_cmd     <= 0;
                             r_we_data    <= 0;
                             r_done       <= 0;
@@ -239,7 +240,19 @@ module SPI_clear (
                         r_cmd       <= WRITE_RAM;
                         r_state     <= 5;
                     end
-                    5: begin // WRITE_RAM_cmd送信中 & WRITE_RAM_data準備と送信
+                    5: begin
+                        r_we_cmd    <= 0;
+                        r_we_data   <= 0;
+                        if (w_done_cmd) begin
+                            r_dc          <= 1;
+                            r_we_cmd      <= 0;
+                            r_we_data     <= 1;
+                            r_data        <= 8'b00000000;
+                            r_rcnt        <= r_rcnt + 1'b1;
+                            r_state       <= 6;
+                        end
+                    end
+                    6: begin // WRITE_RAM_cmd送信中 & WRITE_RAM_data準備と送信
                         r_we_cmd    <= 0;
                         r_we_data   <= 0;
                         if (r_rcnt == (WIDTH*2*8) - 1) begin
@@ -247,10 +260,10 @@ module SPI_clear (
                                 r_we_cmd    <= 0;
                                 r_we_data   <= 0;
                                 r_rcnt      <= 0;
-                                r_state     <= 6;
+                                r_state     <= 7;
                             end
                         end else begin
-                            if (w_done_cmd) begin
+                            if (w_done_data) begin
                                 r_dc          <= 1;
                                 r_we_cmd      <= 0;
                                 r_we_data     <= 1;
@@ -259,9 +272,16 @@ module SPI_clear (
                             end
                         end
                     end
-                    6: begin // FIN
-                        r_state <= 0;
+                    7: begin // FIN
+                        r_state <= 8;
                         r_ycnt <= r_ycnt + 8;
+                    end
+                    8: begin // 2週目以降の初期状態 & SWREST準備
+                            r_dc         <= 0;
+                            r_we_cmd     <= 1;
+                            r_we_data    <= 0;
+                            r_cmd        <= SET_COLUMN;
+                            r_state      <= 1;
                     end
                     endcase
                 end
