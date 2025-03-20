@@ -5,35 +5,67 @@ module SPI_top(
     output wire o_cs,
     output wire o_dc,
     output wire o_rst,
-    output wire o_done
+    output wire o_clk,
+    output wire o_led
 );
 
-    reg r_state = 0;
-    reg       r_init_start = 1;
-    reg r_done = 0;
-
-    wire      w_init_done;
-
     parameter DELAY = 2_700_000; 
+    parameter WIDTH = 240;
+    parameter HEIGHT = 320;
 
-    assign o_done = r_done;
+    reg [1:0] r_state = 0;
+    reg       r_init_start = 0;
+    reg       r_clear_start = 0;
+
+    wire w_init_done;
+    wire w_init_mosi;
+    wire w_init_dc;
+    wire w_init_cs;
+    wire w_clear_done;
+    wire w_clear_mosi;
+    wire w_clear_dc;
+    wire w_clear_cs;
+
+    assign o_led = i_rst;
+    assign w_rst = ~i_rst;
+    assign o_rst = i_rst;
+    assign o_clk = i_clk;
+
+    assign o_mosi = (r_state == 0) ? w_init_mosi :
+                    (r_state == 1) ? w_clear_mosi : 0; 
+    assign o_dc =   (r_state == 0) ? w_init_dc :
+                    (r_state == 1) ? w_clear_dc : 0;
+    assign o_cs =   (r_state == 0) ? w_init_cs :
+                    (r_state == 1) ? w_clear_cs : 1; 
 
     SPI_init # (
         .DELAY (DELAY)
     )spi_init(
-        .i_rst      (i_rst),
+        .i_rst      (w_rst),
         .i_clk      (i_clk),
         .i_start    (r_init_start),
-        .o_mosi     (o_mosi),
-        .o_dc       (o_dc),
-        .o_cs       (o_cs),
+        .o_mosi     (w_init_mosi),
+        .o_dc       (w_init_dc),
+        .o_cs       (w_init_cs),
         .o_done     (w_init_done)
     );
 
-    assign o_rst = i_rst;
+    SPI_clear # (
+        .DELAY  (DELAY),
+        .WIDTH  (WIDTH),
+        .HEIGHT (HEIGHT)
+    ) spi_clear(
+        .i_rst      (w_rst),
+        .i_clk      (i_clk),
+        .i_start    (r_clear_start),
+        .o_mosi     (w_clear_mosi),
+        .o_dc       (w_clear_dc),
+        .o_cs       (w_clear_cs),
+        .o_done     (w_clear_done)
+    );
 
-    always @(posedge i_clk or posedge i_rst) begin
-        if (i_rst) begin
+    always @(posedge i_clk or posedge w_rst) begin
+        if (w_rst) begin
             r_state <= 0;
             r_init_start <= 1;
         end else begin
@@ -42,11 +74,17 @@ module SPI_top(
                     r_init_start <= 0;
                     if (w_init_done) begin
                         r_state <= 1;
-                        r_done <= 1;
+                        r_clear_start <= 1;
                     end
                 end
-                1: begin // 終了
-                    // もう一度実行する場合はresetボタンを押す。
+                1: begin // CLEAR
+                    r_clear_start <= 0;
+                    if (w_clear_done) begin
+                        r_state <= 2;
+                    end 
+                end
+                2: begin //FIN
+                    // もう一度実行する場合はリセットボタンを押す
                 end
             endcase
         end

@@ -203,7 +203,7 @@ module SPI_clear (
                                     if (w_done_data) begin
                                         r_we_cmd      <= 0;
                                         r_we_data     <= 1;
-                                        r_data        <= (r_ycnt + 7) >> 8;
+                                        r_data        <= (r_ycnt + 319) >> 8;
                                         r_state_page  <= 4;
                                     end
                                 end
@@ -213,7 +213,7 @@ module SPI_clear (
                                     if (w_done_data) begin
                                         r_we_cmd      <= 0;
                                         r_we_data     <= 1;
-                                        r_data        <= (r_ycnt + 7) & 8'hff;
+                                        r_data        <= (r_ycnt + 319) & 8'hff;
                                         r_state_page  <= 5;
                                     end
                                 end
@@ -258,7 +258,7 @@ module SPI_clear (
                     6: begin // WRITE_RAM_data準備と送信
                         r_we_cmd    <= 0;
                         r_we_data   <= 0;
-                        if (r_rcnt == (WIDTH*2*8) - 1) begin
+                        if (r_rcnt == (WIDTH*2*16) - 1) begin
                             if (w_done_data) begin
                                 r_we_cmd    <= 0;
                                 r_we_data   <= 0;

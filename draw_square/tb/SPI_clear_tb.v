@@ -38,7 +38,20 @@ module SPI_clear_tb();
         i_start <= 1; #10;
         i_start <= 0; #10;
         
-        wait (o_done == 1'b1);        
+        wait (o_done == 1'b1);   
+
+        #1000;
+
+        i_rst <= 1'b1; #10;
+        i_rst <= 1'b0; #30;
+
+        i_start <= 1; #10;
+        i_start <= 0; #10;
+        
+        wait (o_done == 1'b1);  
+
+        #1000;
+
 
         $finish;
     end

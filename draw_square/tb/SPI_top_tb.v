@@ -5,6 +5,8 @@ module SPI_top_tb();
     wire o_dc;
     wire o_cs;
     wire o_rst;
+    wire o_clk;
+    wire o_led;
 
 
     initial begin
@@ -13,14 +15,18 @@ module SPI_top_tb();
     end
 
     SPI_top # (
-        .DELAY (20)
-    ) spi_top(
+        .DELAY (20),
+        .WIDTH (24),
+        .HEIGHT(32)
+    ) spi_top (
         .i_clk  (i_clk  ),
         .i_rst  (i_rst  ),
         .o_mosi (o_mosi ),
         .o_cs   (o_cs   ),
         .o_dc   (o_dc   ),
-        .o_rst  (o_rst  )
+        .o_rst  (o_rst  ),
+        .o_clk  (o_clk  ),
+        .o_led  (o_led  )
     );
 
     always #10 begin
@@ -32,12 +38,12 @@ module SPI_top_tb();
         i_rst <= 1'b1; #10;
         i_rst <= 1'b0; #10;
          
-        #20000;
+        #1000000;
 
         i_rst <= 1'b1; #10;
         i_rst <= 1'b0; #10;
-
-        #20000;
+         
+        #1000000;
 
         $finish;
     end
