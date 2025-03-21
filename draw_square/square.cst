@@ -7,8 +7,6 @@
 //Device Version: C
 //Created Time: Fri 03 14 23:58:03 2025
 
-IO_LOC "o_led" 10;
-IO_PORT "o_led" IO_TYPE=LVCMOS18 PULL_MODE=UP DRIVE=8 BANK_VCCIO=1.8;
 IO_LOC "o_clk" 80;
 IO_PORT "o_clk" IO_TYPE=LVCMOS18 PULL_MODE=UP DRIVE=8 BANK_VCCIO=1.8;
 IO_LOC "o_rst" 83;
