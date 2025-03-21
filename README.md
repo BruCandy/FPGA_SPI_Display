@@ -14,13 +14,15 @@
 - **概要**: 正方形を描画するための実装が含まれています。
 - **主なファイル**
   - `tb/` : テストベンチ
-  - `SPI_cmd.v` : コマンドの送信を行うモジュール
-  - `SPI_data.v` : 16bitのデータの送信を行うモジュール
-  - `SPI_data_8.v` : 8bitのデータの送信を行うモジュール
-  - `SPI_init.v` : 初期化を行うモジュール
-  - `SPI_clear.v` : クリア（ディスプレイを黒く塗りつぶす）を行うモジュール
-  - `SPI_square.v` : 正方形を描画するモジュール
-  - `SPI_top.v` : トップモジュール
+  - `verilog/SPI_cmd.v` : コマンドの送信を行うモジュール
+  - `verilog/SPI_data.v` : 16bitのデータの送信を行うモジュール
+  - `verilog/SPI_data_8.v` : 8bitのデータの送信を行うモジュール
+  - `verilog/SPI_init.v` : 初期化を行うモジュール
+  - `verilog/SPI_clear.v` : クリア（ディスプレイを黒く塗りつぶす）を行うモジュール
+  - `verilog/SPI_square.v` : 正方形を描画するモジュール
+  - `verilog/SPI_top.v` : トップモジュール
+  - `square.cst` : 物理制約ファイル
+  - `square.sdc` : タイミング制約ファイル
 
 
 ## 実装内容とコード
