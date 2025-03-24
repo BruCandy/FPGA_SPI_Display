@@ -24,12 +24,40 @@
   - `square.cst` : 物理制約ファイル
   - `square.sdc` : タイミング制約ファイル
 
+  ### `draw_petersen_graph/`
+  - **概要**: ペテルセングラフを描画するための実装が含まれています。
+  - **主なファイル**
+  - `tb/` : テストベンチ
+  - `verilog/SPI_cmd.v` : コマンドの送信を行うモジュール
+  - `verilog/SPI_data.v` : 16bitのデータの送信を行うモジュール
+  - `verilog/SPI_data_8.v` : 8bitのデータの送信を行うモジュール
+  - `verilog/SPI_horizontal.v` : x軸に平行な線を描画するモジュール
+  - `verilog/SPI_vertical.v` : y軸に平行な線を描画するモジュール
+  - `verilog/SPI_line.v` : dx > dyとなる線を描画するモジュール
+  - `verilog/SPI_line2.v` : dx < dyとなる線を描画するモジュール
+  - `verilog/SPI_init.v` : 初期化を行うモジュール
+  - `verilog/SPI_clear.v` : クリア（ディスプレイを黒く塗りつぶす）を行うモジュール
+  - `verilog/SPI_pentagon.v` : 正五角形を描画するモジュール
+  - `verilog/SPI_star.v` : 正五角形の内側に星を描画するモジュール
+  - `verilog/SPI_connect.v` : 正五角形と星の各頂点を結ぶモジュール
+  - `verilog/SPI_top.v` : トップモジュール
+  - `petersen_graph.cst` : 物理制約ファイル
+  - `petersen_graph.sdc` : タイミング制約ファイル
+
 
 ## 実装内容とコード
 
 ### ディスプレイに正方形を描画
 - `draw_square/` ディレクトリ に実装されています。
 
+### ディスプレイにペテルセングラフを描画
+- `draw_petersen_graph/` ディレクトリ に実装されています。
+
+## 警告について
+- `draw_square/` では、合成時に警告が1つ出ています。
+- `draw_petersengraph/` では、**logical loop** に関する多数の警告が出ています。
+
 ## 今後のアップデート予定
-- より複雑な図形の描画
+- 画像の描画
 - ファイルの整理（機能が重複しているファイルがあるため）
+- 警告の解決
