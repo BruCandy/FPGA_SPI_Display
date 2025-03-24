@@ -12,7 +12,7 @@ module SPI_top(
     parameter WIDTH  = 240;
     parameter HEIGHT = 320;
 
-    reg [2:0] r_state = 0;
+    reg [2:0] r_state;
     reg       r_init_start = 0;
     reg       r_clear_start = 0;
     reg       r_pentagon_start = 0;
@@ -44,21 +44,21 @@ module SPI_top(
     assign o_rst = i_rst;
     assign o_clk = i_clk;
 
-    assign o_mosi = (r_state == 0) ? w_init_mosi :
-                    (r_state == 1) ? w_clear_mosi :
-                    (r_state == 2) ? w_pentagon_mosi :
-                    (r_state == 3) ? w_star_mosi :
-                    (r_state == 4) ? w_connect_mosi : 0; 
-    assign o_dc =   (r_state == 0) ? w_init_dc :
-                    (r_state == 1) ? w_clear_dc :
-                    (r_state == 2) ? w_pentagon_dc : 
-                    (r_state == 3) ? w_star_dc : 
-                    (r_state == 4) ? w_connect_dc : 0; 
-    assign o_cs =   (r_state == 0) ? w_init_cs :
-                    (r_state == 1) ? w_clear_cs :
-                    (r_state == 2) ? w_pentagon_cs :  
-                    (r_state == 3) ? w_star_cs :  
-                    (r_state == 4) ? w_connect_cs : 1; 
+    assign o_mosi = (r_state == 1) ? w_init_mosi :
+                    (r_state == 2) ? w_clear_mosi :
+                    (r_state == 3) ? w_pentagon_mosi :
+                    (r_state == 4) ? w_star_mosi :
+                    (r_state == 5) ? w_connect_mosi : 0; 
+    assign o_dc =   (r_state == 1) ? w_init_dc :
+                    (r_state == 2) ? w_clear_dc :
+                    (r_state == 3) ? w_pentagon_dc : 
+                    (r_state == 4) ? w_star_dc : 
+                    (r_state == 5) ? w_connect_dc : 0; 
+    assign o_cs =   (r_state == 1) ? w_init_cs :
+                    (r_state == 2) ? w_clear_cs :
+                    (r_state == 3) ? w_pentagon_cs :  
+                    (r_state == 4) ? w_star_cs :  
+                    (r_state == 5) ? w_connect_cs : 1; 
 
     SPI_init # (
         .DELAY (DELAY)
@@ -125,44 +125,52 @@ module SPI_top(
     always @(posedge i_clk or posedge w_rst) begin
         if (w_rst) begin
             r_state <= 0;
-            r_init_start <= 1;
+            r_init_start <= 0;
+            r_clear_start <= 0;
+            r_pentagon_start <= 0;
+            r_star_start <= 0;
+            r_connect_start <= 0;
         end else begin
             case (r_state)
-                0: begin // 初期設定
+                0:begin
+                    r_init_start <= 1;
+                    r_state <= 1;
+                end
+                1: begin // 初期設定
                     r_init_start <= 0;
                     if (w_init_done) begin
-                        r_state <= 1;
+                        r_state <= 2;
                         r_clear_start <= 1;
                     end
                 end
-                1: begin // CLEAR
+                2: begin // CLEAR
                     r_clear_start <= 0;
                     if (w_clear_done) begin
-                        r_state <= 2;
+                        r_state <= 3;
                         r_pentagon_start <= 1;
                     end 
                 end
-                2: begin // pentagon
+                3: begin // pentagon
                     r_pentagon_start <= 0;
                     if (w_pentagon_done) begin
-                        r_state <= 3;
+                        r_state <= 4;
                         r_star_start <= 1;
                     end 
                 end
-                3: begin // pentagon
+                4: begin // pentagon
                     r_star_start <= 0;
                     if (w_star_done) begin
-                        r_state <= 4;
+                        r_state <= 5;
                         r_connect_start <= 1;
                     end 
                 end
-                4: begin // pentagon
+                5: begin // pentagon
                     r_connect_start <= 0;
                     if (w_connect_done) begin
-                        r_state <= 5;
+                        r_state <= 6;
                     end 
                 end
-                5: begin //FIN
+                6: begin //FIN
                     // もう一度実行する場合はリセットボタンを押す
                 end
             endcase
