@@ -11,15 +11,13 @@ module SPI_top(
     parameter DELAY  = 2_700_000; 
     parameter WIDTH  = 240;
     parameter HEIGHT = 320;
-    parameter X1     = 70;
-    parameter X2     = 170;
-    parameter Y1     = 110;
-    parameter Y2     = 210;
+    parameter WIDTH_picture  = 160;
+    parameter HEIGHT_picture = 160;
 
-    reg [1:0] r_state = 0;
+    reg [2:0] r_state = 0;
     reg       r_init_start = 0;
     reg       r_clear_start = 0;
-    reg       r_square_start = 0;
+    reg       r_picture_start = 0;
 
     wire w_init_done;
     wire w_init_mosi;
@@ -29,24 +27,24 @@ module SPI_top(
     wire w_clear_mosi;
     wire w_clear_dc;
     wire w_clear_cs;
-    wire w_square_done;
-    wire w_square_mosi;
-    wire w_square_dc;
-    wire w_square_cs;
+    wire w_picture_done;
+    wire w_picture_mosi;
+    wire w_picture_dc;
+    wire w_picture_cs;
 
     assign w_rst = ~i_rst;
     assign o_rst = i_rst;
     assign o_clk = i_clk;
 
-    assign o_mosi = (r_state == 0) ? w_init_mosi :
-                    (r_state == 1) ? w_clear_mosi :
-                    (r_state == 2) ? w_square_mosi : 0; 
-    assign o_dc =   (r_state == 0) ? w_init_dc :
-                    (r_state == 1) ? w_clear_dc :
-                    (r_state == 2) ? w_square_dc : 0; 
-    assign o_cs =   (r_state == 0) ? w_init_cs :
-                    (r_state == 1) ? w_clear_cs :
-                    (r_state == 2) ? w_square_cs : 1; 
+    assign o_mosi = (r_state == 1) ? w_init_mosi :
+                    (r_state == 2) ? w_clear_mosi :
+                    (r_state == 3) ? w_picture_mosi : 0; 
+    assign o_dc =   (r_state == 1) ? w_init_dc :
+                    (r_state == 2) ? w_clear_dc :
+                    (r_state == 3) ? w_picture_dc : 0; 
+    assign o_cs =   (r_state == 1) ? w_init_cs :
+                    (r_state == 2) ? w_clear_cs :
+                    (r_state == 3) ? w_picture_cs : 1; 
 
     SPI_init # (
         .DELAY (DELAY)
@@ -74,49 +72,53 @@ module SPI_top(
         .o_done     (w_clear_done)
     );
 
-    SPI_square # (
+    SPI_picture # (
         .DELAY (DELAY),
-        .X1    (X1   ),
-        .X2    (X2   ),
-        .Y1    (Y1   ),
-        .Y2    (Y2   ) 
-    ) spi_square (
+        .WIDTH  (WIDTH_picture),
+        .HEIGHT (HEIGHT_picture)
+    ) spi_picture (
         .i_rst      (w_rst),
         .i_clk      (i_clk),
-        .i_start    (r_square_start),
-        .o_mosi     (w_square_mosi),
-        .o_dc       (w_square_dc),
-        .o_cs       (w_square_cs),
-        .o_done     (w_square_done)
+        .i_start    (r_picture_start),
+        .o_mosi     (w_picture_mosi),
+        .o_dc       (w_picture_dc),
+        .o_cs       (w_picture_cs),
+        .o_done     (w_picture_done)
     );
 
     always @(posedge i_clk or posedge w_rst) begin
         if (w_rst) begin
             r_state <= 0;
-            r_init_start <= 1;
+            r_init_start <= 0;
+            r_clear_start <= 0;
+            r_picture_start <= 0;
         end else begin
             case (r_state)
-                0: begin // 初期設定
+                0: begin
+                    r_init_start <= 1;
+                    r_state <= 1;
+                end
+                1: begin // 初期設定
                     r_init_start <= 0;
                     if (w_init_done) begin
-                        r_state <= 1;
+                        r_state <= 2;
                         r_clear_start <= 1;
                     end
                 end
-                1: begin // CLEAR
+                2: begin // CLEAR
                     r_clear_start <= 0;
                     if (w_clear_done) begin
-                        r_state <= 2;
-                        r_square_start <= 1;
-                    end 
-                end
-                2: begin // SQUARE
-                    r_square_start <= 0;
-                    if (w_square_done) begin
                         r_state <= 3;
+                        r_picture_start <= 1;
                     end 
                 end
-                3: begin //FIN
+                3: begin // picture
+                    r_picture_start <= 0;
+                    if (w_picture_done) begin
+                        r_state <= 4;
+                    end 
+                end
+                4: begin //FIN
                     // もう一度実行する場合はリセットボタンを押す
                 end
             endcase
