@@ -15,9 +15,8 @@ module SPI_picture_tb();
 
     SPI_picture # (
         .DELAY  (20),
-        .WIDTH  (6),
-        .HEIGHT (8),
-        .PATH   ("data/dog.hex")
+        .WIDTH  (10),
+        .HEIGHT (10)
     ) spi_picture(
         .i_rst      (i_rst),
         .i_clk      (i_clk),
