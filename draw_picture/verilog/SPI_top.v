@@ -11,8 +11,6 @@ module SPI_top(
     parameter DELAY  = 2_700_000; 
     parameter WIDTH  = 240;
     parameter HEIGHT = 320;
-    parameter WIDTH_picture  = 160;
-    parameter HEIGHT_picture = 160;
 
     reg [2:0] r_state = 0;
     reg       r_init_start = 0;
@@ -73,9 +71,7 @@ module SPI_top(
     );
 
     SPI_picture # (
-        .DELAY (DELAY),
-        .WIDTH  (WIDTH_picture),
-        .HEIGHT (HEIGHT_picture)
+        .DELAY (DELAY)
     ) spi_picture (
         .i_rst      (w_rst),
         .i_clk      (i_clk),

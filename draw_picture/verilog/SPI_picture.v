@@ -8,8 +8,8 @@ module SPI_picture (
     output wire o_done
 );
 
-    parameter WIDTH         = 160;
-    parameter HEIGHT        = 160;
+    parameter WIDTH         = 135;
+    parameter HEIGHT        = 135;
     parameter SET_COLUMN    = 8'h2A;
     parameter SET_PAGE      = 8'h2B;
     parameter WRITE_RAM     = 8'h2C;
@@ -24,8 +24,8 @@ module SPI_picture (
     reg        r_dc = 0;
     reg        r_done = 0;
     reg        r_need_delay = 0; 
-    reg [8:0]  r_ycnt = 80;
-    reg [11:0] r_rcnt = 0;
+    reg [11:0]  r_ycnt = 92;
+    reg [11:0] r_xcnt = 52;
     reg [2:0]  r_state_column = 0;
     reg [2:0]  r_state_page = 0;
     reg [14:0] r_mcnt;  
@@ -36,7 +36,7 @@ module SPI_picture (
     wire o_data;
     wire o_cs_cmd;
     wire o_cs_data;
-    wire [15:0] w_pixel_data;
+    wire [23:0] w_pixel_data;
 
     SPI_cmd # (
         .DELAY (DELAY)
@@ -62,14 +62,14 @@ module SPI_picture (
     );
 
 
-    Gowin_pROM u_prom (
-        .clk(i_clk),
-        .oce(1'b1),
-        .ce(1'b1),
-        .reset(i_rst),
-        .ad(r_mcnt),
-        .dout(w_pixel_data)
-    );
+     Gowin_pROM u_prom (
+         .clk(i_clk),
+         .oce(1'b1),
+         .ce(1'b1),
+         .reset(i_rst),
+         .ad(r_mcnt),
+         .dout(w_pixel_data)
+     );
 
     assign o_dc = r_dc;
     assign o_done = r_done;
@@ -81,8 +81,8 @@ module SPI_picture (
             r_state   <= 0;
             r_dc <= 0;
             r_done    <= 0;
-            r_rcnt    <= 0;
-            r_ycnt    <= 80;
+            r_xcnt    <= 52;
+            r_ycnt    <= 92;
             r_mcnt    <= 0;
             r_we_cmd  <= 0;
             r_we_data <= 0;
@@ -91,10 +91,10 @@ module SPI_picture (
             r_need_delay = 0; 
         end else begin
                 r_done    <= 0;
-                if (r_ycnt-80 == HEIGHT) begin
+                if (r_ycnt-92 == HEIGHT) begin
                     r_state <= 0;
                     r_done <= 1;
-                    r_ycnt <= 80;
+                    r_ycnt <= 92;
                     r_mcnt    <= 0;
                     r_dc <= 0;
                 end else begin
@@ -124,7 +124,7 @@ module SPI_picture (
                                 1: begin
                                     r_we_cmd        <= 0;
                                     r_we_data       <= 1;
-                                    r_data          <= 40 >> 8;
+                                    r_data          <= r_xcnt >> 8;
                                     r_state_column  <= 2;
                                 end
                                 2: begin
@@ -133,7 +133,7 @@ module SPI_picture (
                                     if (w_done_data) begin
                                         r_we_cmd        <= 0;
                                         r_we_data       <= 1;
-                                        r_data          <= 40 & 8'hff;
+                                        r_data          <= r_xcnt & 8'hff;
                                         r_state_column  <= 3;
                                     end
                                 end
@@ -143,7 +143,7 @@ module SPI_picture (
                                     if (w_done_data) begin
                                         r_we_cmd        <= 0;
                                         r_we_data       <= 1;
-                                        r_data          <= (40 +WIDTH-1) >> 8;
+                                        r_data          <= r_xcnt >> 8;
                                         r_state_column  <= 4;
                                     end
                                 end
@@ -153,7 +153,7 @@ module SPI_picture (
                                     if (w_done_data) begin
                                         r_we_cmd        <= 0;
                                         r_we_data       <= 1;
-                                        r_data          <= (40+(WIDTH-1)) & 8'hff;
+                                        r_data          <= r_xcnt & 8'hff;
                                         r_state_column  <= 5;
                                     end
                                 end
@@ -244,9 +244,7 @@ module SPI_picture (
                             r_dc          <= 1;
                             r_we_cmd      <= 0;
                             r_we_data     <= 1;
-                            r_data        <= w_pixel_data[15:8];
-//                            r_data        <= 8'b11111111;
-                            r_rcnt        <= r_rcnt + 1'b1;
+                            r_data        <= w_pixel_data[23:16];
                             r_state       <= 6;
                         end
                     end
@@ -257,40 +255,44 @@ module SPI_picture (
                             r_dc          <= 1;
                             r_we_cmd      <= 0;
                             r_we_data     <= 1;
-                            r_data        <= w_pixel_data[7:0];
-//                            r_data        <= 8'b11111111;
-                            r_rcnt        <= r_rcnt + 1'b1;
-                            r_mcnt        <= r_mcnt + 1'b1;
+                            r_data        <= w_pixel_data[15:8];
                             r_state     <= 7;
                         end
                     end
-                    7: begin
+                    7: begin // WRITE_RAM_data準備と送信
                         r_we_cmd    <= 0;
                         r_we_data   <= 0;
-                        if (r_rcnt == 2*WIDTH) begin
-                            if (w_done_data) begin
-                                r_we_cmd    <= 0;
-                                r_we_data   <= 0;
-                                r_rcnt      <= 0;
-                                r_state     <= 8;
-                            end
-                        end else begin
-                            if (w_done_data) begin // 下位ビットの送信と二つ目以降の上位ビットの準備
-                                r_dc          <= 1;
-                                r_we_cmd      <= 0;
-                                r_we_data     <= 1;
-                                r_data        <= w_pixel_data[15:8];
-//                                r_data        <= 8'b11111111;
-                                r_rcnt        <= r_rcnt + 1'b1;
-                                r_state     <= 6;
-                            end
+                        if (w_done_data) begin // 上位ビットの送信と下位ビットの準備
+                            r_dc          <= 1;
+                            r_we_cmd      <= 0;
+                            r_we_data     <= 1;
+                            r_data        <= w_pixel_data[7:0];
+                            r_xcnt        <= r_xcnt + 1'b1;
+                            r_mcnt        <= r_mcnt + 1'b1;
+                            r_state     <= 9;
                         end
                     end
-                    8: begin // FIN
-                        r_state <= 9;
+                    9: begin
+                        r_we_cmd    <= 0;
+                        r_we_data   <= 0;
+                        if (w_done_data) begin
+                            if (r_xcnt-52 == WIDTH) begin
+                                r_state <= 10;
+                                r_xcnt <= 52;
+                            end else begin
+                                r_dc         <= 0;
+                                r_we_cmd     <= 1;
+                                r_we_data    <= 0;
+                                r_cmd        <= SET_COLUMN;
+                                r_state      <= 1;
+                            end 
+                        end
+                    end
+                    10: begin // FIN
+                        r_state <= 11;
                         r_ycnt <= r_ycnt + 1'b1;
                     end
-                    9: begin // 2週目以降の初期状態 & SWREST準備
+                    11: begin // 2週目以降の初期状態 & SWREST準備
                             r_dc         <= 0;
                             r_we_cmd     <= 1;
                             r_we_data    <= 0;
