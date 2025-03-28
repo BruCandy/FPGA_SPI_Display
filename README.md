@@ -66,7 +66,7 @@
 ### ディスプレイに正方形を描画
 - `draw_square/` ディレクトリ に実装されています。
 
-実行結果を以下に示します。
+白色の正方形をディスプレイに描画した様子を以下に示します。
 
 <p align="center">
   <img src="docs/images/square_example.jpg" alt="No　date" width="240" height="320">
@@ -75,7 +75,7 @@
 ### ディスプレイにペテルセングラフを描画
 - `draw_petersen_graph/` ディレクトリ に実装されています。
 
-実行結果を以下に示します。
+白色のペテルセングラフをディスプレイに描画した様子を以下に示します。
 
 <p align="center">
   <img src="docs/images/petersen_graph_example.jpg" alt="No　date" width="240" height="320">
@@ -84,7 +84,12 @@
 ### ディスプレイに画像を描画
 - `draw_picture/` ディレクトリ に実装されています。
 
-実行結果を以下に示します。
+画像をディスプレイに描画した様子を以下に示します。本来、ILI9341ディスプレイには1ピクセルあたり RGB565（16bit）形式 のデータを送信する必要がありますが、RGB565形式で送信した場合には正しく描画されませんでした。
+
+そのため今回は、試験的に RGB888（24bit）形式 による送信を行いました。
+ただし、ILI9341はRGB888に正式対応していないため、色が正しく表示されず、想定外の色となりました。
+
+この問題への対処として、扱う色を 3色 に限定することで、色の誤差を抑えながら画像の表示を試みました。
 
 <p align="center">
   <img src="docs/images/picture_example.jpg" alt="No　date" width="240" height="320">
