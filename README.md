@@ -66,11 +66,29 @@
 ### ディスプレイに正方形を描画
 - `draw_square/` ディレクトリ に実装されています。
 
+実行結果を以下に示します。
+
+<p align="center">
+  <img src="docs/images/square_example.jpg" alt="No　date" width="240" height="320">
+</p>
+
 ### ディスプレイにペテルセングラフを描画
 - `draw_petersen_graph/` ディレクトリ に実装されています。
 
+実行結果を以下に示します。
+
+<p align="center">
+  <img src="docs/images/petersen_graph_example.jpg" alt="No　date" width="240" height="320">
+</p>
+
 ### ディスプレイに画像を描画
 - `draw_picture/` ディレクトリ に実装されています。
+
+実行結果を以下に示します。
+
+<p align="center">
+  <img src="docs/images/picture_example.jpg" alt="No　date" width="240" height="320">
+</p>
 
 ## 問題と課題
 - `draw_square/` では、合成時に警告が1つ出ています。
