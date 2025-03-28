@@ -8,9 +8,9 @@
 2. `Hard Module → Memory → Block Memory` を選択  
 3. `pROM` をダブルクリックして、**IP Customization** を開く  
 4. 以下の設定を行う  
-   - **Address Depth** : `25600`  
-   - **Data Width** : `16`  
+   - **Address Depth** : `182245(135×135)`  
+   - **Data Width** : `24`  
    - **Memory Initialization File** : 表示したい画像を `.mi` 形式で指定  
 5. `OK` を押して生成
 
-`.mi` ファイルには、16bitカラー（RGB565）形式で変換した画像データを格納しています。
+`.mi` ファイルには、24bitカラー（RGB888）形式で変換した画像データを格納しています。
