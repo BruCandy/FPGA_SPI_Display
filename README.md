@@ -103,15 +103,17 @@
   <img src="docs/images/picture_example2.jpg" alt="No　date" width="240" height="320">
 </p>
 
-女の子の絵をディスプレイに表示
+女の子のイラストをディスプレイに表示
 <p align="center">
   <img src="docs/images/picture_example3.jpg" alt="No　date" width="240" height="320">
 </p>
 
-ウサギの絵をディスプレイに表示
+ウサギのイラストをディスプレイに表示
 <p align="center">
   <img src="docs/images/picture_example4.jpg" alt="No　date" width="240" height="320">
 </p>
+
+女の子・ウサギのイラストは、[@shigaaaan](https://www.instagram.com/shigaaaan)（Instagram）より許可を得て使用しています。
 
 ## 問題と課題
 - `draw_square/` では、合成時に警告が1つ出ています。
