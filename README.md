@@ -103,12 +103,12 @@
   <img src="docs/images/picture_example2.jpg" alt="No　date" width="240" height="320">
 </p>
 
-女の子の絵をこのディスプレイに表示
+女の子の絵をディスプレイに表示
 <p align="center">
   <img src="docs/images/picture_example3.jpg" alt="No　date" width="240" height="320">
 </p>
 
-ウサギの絵をこのディスプレイに表示
+ウサギの絵をディスプレイに表示
 <p align="center">
   <img src="docs/images/picture_example4.jpg" alt="No　date" width="240" height="320">
 </p>
