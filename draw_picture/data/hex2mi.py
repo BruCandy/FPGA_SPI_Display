@@ -17,4 +17,4 @@ def hex_to_mi(hex_path, mi_path, width=24):
 
 
 if __name__ == "__main__":
-    hex_to_mi("data/hex/dog.hex", "data/mi/dog.mi")
+    hex_to_mi("data/hex/girl.hex", "data/mi/girl.mi")

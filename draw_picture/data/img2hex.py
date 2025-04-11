@@ -16,9 +16,20 @@ def reduce_to_three_color(img):
     brightness = img.mean(axis=2)
     result = np.zeros_like(img)
 
-    result[brightness <= 110] = [0, 0, 0]
-    result[(brightness > 110) & (brightness <= 215)] = [206, 106, 118]
-    result[brightness > 215] = [255, 255, 255]
+    # result[brightness <= 110] = [0, 0, 0]
+    # result[(brightness > 110) & (brightness <= 215)] = [206, 106, 118]
+    # result[brightness > 215] = [255, 255, 255]
+
+    result[brightness <= 120] = [0, 0, 0]
+    result[(brightness > 120) & (brightness <= 200)] = [206, 106, 118]
+    result[brightness > 200] = [255, 255, 255]
+
+    # result[brightness <= 130] = [0, 0, 0]
+    # result[(brightness > 130) & (brightness <= 210)] = [206, 106, 118]
+    # result[brightness > 210] = [255, 255, 255]
+
+    # result[brightness <= 110] = [0, 0, 0]
+    # result[brightness > 110] = [255, 255, 255]
 
     return result
 
@@ -34,4 +45,4 @@ def image_to_bgr_hex(image_path, output_path, size=(135, 135)):
 
 
 if __name__ == "__main__":
-    image_to_bgr_hex("data/jpg/dog.jpg", "data/hex/dog.hex", size=(135, 135))
+    image_to_bgr_hex("data/jpg/qrcode.jpg", "data/hex/qrcode.hex", size=(135, 135))

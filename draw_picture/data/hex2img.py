@@ -21,4 +21,4 @@ def hex_to_image(hex_path, output_path):
 
 
 if __name__ == "__main__":
-    hex_to_image("data/hex/dog.hex", "data/jpg/dog_debug.jpg")
+    hex_to_image("data/hex/qrcode.hex", "data/jpg/qrcode_debug.jpg")
