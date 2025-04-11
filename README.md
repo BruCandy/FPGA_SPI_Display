@@ -93,8 +93,24 @@
 
 なお、正方形やペテルセングラフのような単色の描画の場合は、色の正確さをあまり意識する必要がなかったため、この問題を解くに考慮せずに、単純にデータを送信するだけで済んでいました。
 
+私のアイコンをディスプレイに表示
 <p align="center">
-  <img src="docs/images/picture_example.jpg" alt="No　date" width="240" height="320">
+  <img src="docs/images/picture_example1.jpg" alt="No　date" width="240" height="320">
+</p>
+
+このリポジトリのQRコードをディスプレイに表示
+<p align="center">
+  <img src="docs/images/picture_example2.jpg" alt="No　date" width="240" height="320">
+</p>
+
+女の子の絵をこのディスプレイに表示
+<p align="center">
+  <img src="docs/images/picture_example3.jpg" alt="No　date" width="240" height="320">
+</p>
+
+ウサギの絵をこのディスプレイに表示
+<p align="center">
+  <img src="docs/images/picture_example4.jpg" alt="No　date" width="240" height="320">
 </p>
 
 ## 問題と課題
