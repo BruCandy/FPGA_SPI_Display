@@ -45,4 +45,4 @@ def image_to_bgr_hex(image_path, output_path, size=(135, 135)):
 
 
 if __name__ == "__main__":
-    image_to_bgr_hex("data/jpg/qrcode.jpg", "data/hex/qrcode.hex", size=(135, 135))
+    image_to_bgr_hex("data/jpg/qrcode2.jpg", "data/hex/qrcode2.hex", size=(135, 135))
