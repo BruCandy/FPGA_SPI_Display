@@ -74,7 +74,7 @@ module SPI_init (
             r_need_delay <= 0;
         end else begin
             case (r_state)
-                0: begin // 初期状態 & SWREST準備
+                0: begin
                     r_we_cmd     <= 0;
                     r_we_data    <= 0;
                     r_need_delay <= 0;
@@ -88,7 +88,7 @@ module SPI_init (
                         r_state      <= 1;
                     end
                 end
-                1: begin // SWRESET送信中 & PWCTR1_cmd準備
+                1: begin
                     r_we_cmd    <= 0;
                     r_we_data   <= 0;
                     if (w_done_cmd) begin
@@ -100,7 +100,7 @@ module SPI_init (
                         r_state      <= 2;
                     end
                 end
-                2: begin // PWCTR1_cmd送信中 & PWCTR1_data準備
+                2: begin
                     r_we_cmd    <= 0;
                     r_we_data   <= 0;
                     if (w_done_cmd) begin
@@ -111,7 +111,7 @@ module SPI_init (
                         r_state     <= 3;
                     end
                 end
-                3: begin // PWCTR1_data送信中 & PWCTR2_cmd準備
+                3: begin
                     r_we_cmd    <= 0;
                     r_we_data   <= 0;
                     if (w_done_data) begin
@@ -123,7 +123,7 @@ module SPI_init (
                         r_state      <= 4;
                     end
                 end
-                4: begin // PWCTR2_cmd送信中 & PWCTR2_data準備
+                4: begin
                     r_we_cmd    <= 0;
                     r_we_data   <= 0;
                     if (w_done_cmd) begin
@@ -134,7 +134,7 @@ module SPI_init (
                         r_state     <= 5;
                     end
                 end
-                5: begin // PWCTR2_data送信中 & VMCTR1_cmd準備
+                5: begin
                     r_we_cmd    <= 0;
                     r_we_data   <= 0;
                     if (w_done_data) begin
@@ -146,7 +146,7 @@ module SPI_init (
                         r_state      <= 6;
                     end
                 end
-                6: begin // VMCTR1_cmd送信中 & VMCTR1_data準備
+                6: begin
                     r_we_cmd    <= 0;
                     r_we_data   <= 0;
                     if (w_done_cmd) begin
@@ -157,7 +157,7 @@ module SPI_init (
                         r_state     <= 7;
                     end
                 end
-                7: begin // VMCTR1_data送信中 & VMCTR2_cmd準備
+                7: begin
                     r_we_cmd    <= 0;
                     r_we_data   <= 0;
                     if (w_done_data) begin
@@ -169,7 +169,7 @@ module SPI_init (
                         r_state      <= 8;
                     end
                 end
-                8: begin // VMCTR2_cmd送信中 & VMCTR2_data準備
+                8: begin
                     r_we_cmd    <= 0;
                     r_we_data   <= 0;
                     if (w_done_cmd) begin
@@ -180,7 +180,7 @@ module SPI_init (
                         r_state     <= 9;
                     end
                 end 
-                9: begin // VMCTR2_data送信中 & MADCTL_cmd準備
+                9: begin
                     r_we_cmd    <= 0;
                     r_we_data   <= 0;
                     if (w_done_data) begin
@@ -192,7 +192,7 @@ module SPI_init (
                         r_state      <= 10;
                     end
                 end
-                10: begin // MADCTL_cmd送信中 & MADCTL_data準備
+                10: begin
                     r_we_cmd    <= 0;
                     r_we_data   <= 0;
                     if (w_done_cmd) begin
@@ -203,7 +203,7 @@ module SPI_init (
                         r_state     <= 11;
                     end
                 end
-                11: begin // MADCTL_data送信中 & PIXFMT_cmd準備
+                11: begin
                     r_we_cmd    <= 0;
                     r_we_data   <= 0;
                     if (w_done_data) begin
@@ -215,7 +215,7 @@ module SPI_init (
                         r_state      <= 12;
                     end
                 end
-                12: begin // PIXFMT_cmd送信中 & PIXFMT_data準備
+                12: begin
                     r_we_cmd    <= 0;
                     r_we_data   <= 0;
                     if (w_done_cmd) begin
@@ -226,7 +226,7 @@ module SPI_init (
                         r_state     <= 13;
                     end
                 end
-                13: begin // PIXFMT_data送信中 & SLPOUT準備
+                13: begin
                     r_we_cmd    <= 0;
                     r_we_data   <= 0;
                     if (w_done_data) begin
@@ -238,7 +238,7 @@ module SPI_init (
                         r_state      <= 14;
                     end
                 end
-                14:  begin // SLPOUT送信中 & DISPLAY_ON準備
+                14:  begin
                     r_we_cmd    <= 0;
                     r_we_data   <= 0;
                     if (w_done_cmd) begin
@@ -250,7 +250,7 @@ module SPI_init (
                         r_state      <= 15;
                     end
                 end
-                15: begin // DISPLAY_ON送信中 & FIN
+                15: begin
                     r_we_cmd    <= 0;
                     r_we_data   <= 0;
                     if (w_done_cmd) begin

@@ -38,7 +38,7 @@ module SPI_cmd(
         end else begin
             r_done <= 0;
             case (r_state)
-                0: begin // idle
+                0: begin
                     if (i_we == 1) begin
                         r_cs <= 0;
                         r_cmd <= i_cmd;
@@ -47,7 +47,7 @@ module SPI_cmd(
                         r_state <= 1;
                     end
                 end
-                1: begin // send
+                1: begin
                     if (r_cnt == CNT-1) begin
                         r_cmd <= {r_cmd[6:0], 1'b0};
                         r_cnt <= 0;
@@ -58,7 +58,7 @@ module SPI_cmd(
                         r_cmd <= {r_cmd[6:0], 1'b0};
                     end
                 end
-                2: begin // wait
+                2: begin
                     if (r_wait == WAIT-1) begin
                         r_wait <= 0;
                         r_state <= 3;
@@ -66,7 +66,7 @@ module SPI_cmd(
                         r_wait <= r_wait + 1'b1;
                     end
                 end
-                3: begin // fin
+                3: begin
                     r_state <= 0;
                     r_done <= 1;
                 end

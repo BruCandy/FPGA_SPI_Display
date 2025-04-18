@@ -35,7 +35,7 @@ module SPI_data_8(
         end else begin
             r_done <= 0;
             case (r_state)
-                0: begin // idle
+                0: begin
                     if (i_we == 1) begin
                         r_cs <= 0;
                         r_data <= i_data;
@@ -44,7 +44,7 @@ module SPI_data_8(
                         r_state <= 1;
                     end
                 end
-                1: begin // send
+                1: begin
                     if (r_cnt == CNT-1) begin
                         r_data <= {r_data[6:0], 1'b0};
                         r_cnt <= 0;
@@ -55,7 +55,7 @@ module SPI_data_8(
                         r_data <= {r_data[6:0], 1'b0};
                     end
                 end
-                2: begin // wait
+                2: begin
                     if (r_wait == WAIT-1) begin
                         r_wait <= 0;
                         r_state <= 3;
@@ -63,7 +63,7 @@ module SPI_data_8(
                         r_wait <= r_wait + 1'b1;
                     end
                 end
-                3: begin //fin
+                3: begin
                     r_state <= 0;
                     r_done <= 1;
                 end

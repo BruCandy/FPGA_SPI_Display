@@ -89,7 +89,7 @@ module SPI_square (
                     r_dc <= 0;
                 end else begin
                     case (r_state)
-                        0: begin // 1周目のみの初期状態 & SWREST準備
+                        0: begin
                             r_we_cmd     <= 0;
                             r_we_data    <= 0;
                             r_done       <= 0;
@@ -101,7 +101,7 @@ module SPI_square (
                                 r_state      <= 1;
                             end
                         end
-                        1: begin // SET_COLMN_cmd送信中 & SET_COLMN_data準備と送信
+                        1: begin
                             r_we_cmd    <= 0;
                             r_we_data   <= 0;
                             case (r_state_column)
@@ -157,23 +157,14 @@ module SPI_square (
                                 end
                             endcase
                         end
-                        2: begin // SET_PAGE_cmd準備
-                            // r_we_cmd    <= 0;
-                            // r_we_data   <= 0;
-                            // if (w_done_cmd) begin
-                            //     r_dc        <= 0;
-                            //     r_we_cmd    <= 1;
-                            //     r_we_data   <= 0;
-                            //     r_cmd       <= SET_PAGE;
-                            //     r_state     <= 3;
-                            // end
+                        2: begin
                             r_dc        <= 0;
                             r_we_cmd    <= 1;
                             r_we_data   <= 0;
                             r_cmd       <= SET_PAGE;
                             r_state     <= 3;
                         end
-                        3: begin // SET_PAGE_cmd送信中 & SET_PAGE_data準備と送信
+                        3: begin
                             r_we_cmd    <= 0;
                             r_we_data   <= 0;
                             case (r_state_page)
@@ -229,23 +220,14 @@ module SPI_square (
                                 end
                         endcase
                     end
-                    4: begin // WRITE_RAM_cmd準備
-                        // r_we_cmd    <= 0;
-                        // r_we_data   <= 0;
-                        // if (w_done_cmd) begin
-                        //     r_dc        <= 0;
-                        //     r_we_cmd    <= 1;
-                        //     r_we_data   <= 0;
-                        //     r_cmd       <= WRITE_RAM;
-                        //     r_state     <= 5;
-                        // end
+                    4: begin
                         r_dc        <= 0;
                         r_we_cmd    <= 1;
                         r_we_data   <= 0;
                         r_cmd       <= WRITE_RAM;
                         r_state     <= 5;
                     end
-                    5: begin // WRITE_RAM_cmd送信中 & 一つ目のWRITE_RAM_dataの準備
+                    5: begin
                         r_we_cmd    <= 0;
                         r_we_data   <= 0;
                         if (w_done_cmd) begin
@@ -257,7 +239,7 @@ module SPI_square (
                             r_state       <= 6;
                         end
                     end
-                    6: begin // WRITE_RAM_data準備と送信
+                    6: begin
                         r_we_cmd    <= 0;
                         r_we_data   <= 0;
                         if (r_rcnt == (8*2*(X2-X1+1)) - 1) begin
@@ -277,11 +259,11 @@ module SPI_square (
                             end
                         end
                     end
-                    7: begin // FIN
+                    7: begin
                         r_state <= 8;
                         r_ycnt <= r_ycnt + 1'b1;
                     end
-                    8: begin // 2週目以降の初期状態 & SWREST準備
+                    8: begin
                             r_dc         <= 0;
                             r_we_cmd     <= 1;
                             r_we_data    <= 0;

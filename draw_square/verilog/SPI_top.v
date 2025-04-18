@@ -96,27 +96,27 @@ module SPI_top(
             r_init_start <= 1;
         end else begin
             case (r_state)
-                0: begin // 初期設定
+                0: begin
                     r_init_start <= 0;
                     if (w_init_done) begin
                         r_state <= 1;
                         r_clear_start <= 1;
                     end
                 end
-                1: begin // CLEAR
+                1: begin 
                     r_clear_start <= 0;
                     if (w_clear_done) begin
                         r_state <= 2;
                         r_square_start <= 1;
                     end 
                 end
-                2: begin // SQUARE
+                2: begin
                     r_square_start <= 0;
                     if (w_square_done) begin
                         r_state <= 3;
                     end 
                 end
-                3: begin //FIN
+                3: begin
                     // もう一度実行する場合はリセットボタンを押す
                 end
             endcase
