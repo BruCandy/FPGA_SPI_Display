@@ -99,7 +99,7 @@ module SPI_picture (
                     r_dc <= 0;
                 end else begin
                     case (r_state)
-                        0: begin // 1周目のみの初期状態 & SWREST準備
+                        0: begin
                             r_we_cmd     <= 0;
                             r_we_data    <= 0;
                             r_done       <= 0;
@@ -111,7 +111,7 @@ module SPI_picture (
                                 r_state      <= 1;
                             end
                         end
-                        1: begin // SET_COLMN_cmd送信中 & SET_COLMN_data準備と送信
+                        1: begin
                             r_we_cmd    <= 0;
                             r_we_data   <= 0;
                             case (r_state_column)
@@ -167,14 +167,14 @@ module SPI_picture (
                                 end
                             endcase
                         end
-                        2: begin // SET_PAGE_cmd準備
+                        2: begin
                             r_dc        <= 0;
                             r_we_cmd    <= 1;
                             r_we_data   <= 0;
                             r_cmd       <= SET_PAGE;
                             r_state     <= 3;
                         end
-                        3: begin // SET_PAGE_cmd送信中 & SET_PAGE_data準備と送信
+                        3: begin
                             r_we_cmd    <= 0;
                             r_we_data   <= 0;
                             case (r_state_page)
@@ -230,17 +230,17 @@ module SPI_picture (
                                 end
                         endcase
                     end
-                    4: begin // WRITE_RAM_cmd準備
+                    4: begin
                         r_dc        <= 0;
                         r_we_cmd    <= 1;
                         r_we_data   <= 0;
                         r_cmd       <= WRITE_RAM;
                         r_state     <= 5;
                     end
-                    5: begin // WRITE_RAM_cmd送信中 & 一つ目のWRITE_RAM_dataの準備
+                    5: begin
                         r_we_cmd    <= 0;
                         r_we_data   <= 0;
-                        if (w_done_cmd) begin // 一つ目の上位ビットの準備
+                        if (w_done_cmd) begin
                             r_dc          <= 1;
                             r_we_cmd      <= 0;
                             r_we_data     <= 1;
@@ -248,10 +248,10 @@ module SPI_picture (
                             r_state       <= 6;
                         end
                     end
-                    6: begin // WRITE_RAM_data準備と送信
+                    6: begin
                         r_we_cmd    <= 0;
                         r_we_data   <= 0;
-                        if (w_done_data) begin // 上位ビットの送信と下位ビットの準備
+                        if (w_done_data) begin
                             r_dc          <= 1;
                             r_we_cmd      <= 0;
                             r_we_data     <= 1;
@@ -259,10 +259,10 @@ module SPI_picture (
                             r_state     <= 7;
                         end
                     end
-                    7: begin // WRITE_RAM_data準備と送信
+                    7: begin
                         r_we_cmd    <= 0;
                         r_we_data   <= 0;
-                        if (w_done_data) begin // 上位ビットの送信と下位ビットの準備
+                        if (w_done_data) begin
                             r_dc          <= 1;
                             r_we_cmd      <= 0;
                             r_we_data     <= 1;
@@ -288,11 +288,11 @@ module SPI_picture (
                             end 
                         end
                     end
-                    10: begin // FIN
+                    10: begin
                         r_state <= 11;
                         r_ycnt <= r_ycnt + 1'b1;
                     end
-                    11: begin // 2週目以降の初期状態 & SWREST準備
+                    11: begin
                             r_dc         <= 0;
                             r_we_cmd     <= 1;
                             r_we_data    <= 0;

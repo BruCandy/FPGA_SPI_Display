@@ -94,27 +94,27 @@ module SPI_top(
                     r_init_start <= 1;
                     r_state <= 1;
                 end
-                1: begin // 初期設定
+                1: begin
                     r_init_start <= 0;
                     if (w_init_done) begin
                         r_state <= 2;
                         r_clear_start <= 1;
                     end
                 end
-                2: begin // CLEAR
+                2: begin
                     r_clear_start <= 0;
                     if (w_clear_done) begin
                         r_state <= 3;
                         r_picture_start <= 1;
                     end 
                 end
-                3: begin // picture
+                3: begin
                     r_picture_start <= 0;
                     if (w_picture_done) begin
                         r_state <= 4;
                     end 
                 end
-                4: begin //FIN
+                4: begin
                     // もう一度実行する場合はリセットボタンを押す
                 end
             endcase
