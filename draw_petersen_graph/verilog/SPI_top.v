@@ -136,41 +136,41 @@ module SPI_top(
                     r_init_start <= 1;
                     r_state <= 1;
                 end
-                1: begin // 初期設定
+                1: begin
                     r_init_start <= 0;
                     if (w_init_done) begin
                         r_state <= 2;
                         r_clear_start <= 1;
                     end
                 end
-                2: begin // CLEAR
+                2: begin
                     r_clear_start <= 0;
                     if (w_clear_done) begin
                         r_state <= 3;
                         r_pentagon_start <= 1;
                     end 
                 end
-                3: begin // pentagon
+                3: begin
                     r_pentagon_start <= 0;
                     if (w_pentagon_done) begin
                         r_state <= 4;
                         r_star_start <= 1;
                     end 
                 end
-                4: begin // pentagon
+                4: begin
                     r_star_start <= 0;
                     if (w_star_done) begin
                         r_state <= 5;
                         r_connect_start <= 1;
                     end 
                 end
-                5: begin // pentagon
+                5: begin
                     r_connect_start <= 0;
                     if (w_connect_done) begin
                         r_state <= 6;
                     end 
                 end
-                6: begin //FIN
+                6: begin
                     // もう一度実行する場合はリセットボタンを押す
                 end
             endcase

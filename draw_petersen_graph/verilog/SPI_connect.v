@@ -142,7 +142,7 @@ module SPI_connect(
             r_y2_2 <= Y2;
         end else begin
             case (r_state)
-                0: begin // 初期状態と(120,46)-(225,122)の準備
+                0: begin
                     r_done <= 0;
                     r_x1 <= X1;
                     r_y1 <= Y1;
@@ -156,7 +156,7 @@ module SPI_connect(
                         r_y2_3 <= Y1_2;
                     end
                 end
-                1: begin // (120,46)-(225,122)の送信と(225,122)-(185,245)の準備
+                1: begin
                     r_vertical_start <= 0;
                     if (w_vertical_done) begin
                         r_state <= 2;
@@ -167,7 +167,7 @@ module SPI_connect(
                         r_y2 <= Y2;
                     end 
                 end
-                2: begin // (225,122)-(185,245)の送信と(185,245)-(55,245)の準備
+                2: begin
                     r_line_start <= 0;
                     if (w_line_done) begin
                         r_state <= 3;
@@ -178,7 +178,7 @@ module SPI_connect(
                         r_y2_2 <= Y3;
                     end 
                 end
-                3: begin // (185,245)-(55,245)の送信と(55,245)-(15,122)の準備
+                3: begin
                     r_line2_start <= 0;
                     if (w_line2_done) begin
                         r_state <= 4;
@@ -189,7 +189,7 @@ module SPI_connect(
                         r_y2_2 <= Y4;
                     end 
                 end
-                4: begin // (55,245)-(15,122)の送信と(15,122)-(120,46)の準備
+                4: begin
                     r_line2_start <= 0;
                     if (w_line2_done) begin
                         r_state <= 5;
@@ -200,7 +200,7 @@ module SPI_connect(
                         r_y2 <= Y5_2;
                     end 
                 end
-                5: begin // (15,122)-(120,90)の送信
+                5: begin
                     r_line_start <= 0;
                     if (w_line_done) begin
                         r_state <= 0;
