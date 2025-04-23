@@ -62,7 +62,7 @@ module SPI_picture (
     );
 
 
-     Gowin_pROM u_prom (
+     Gowin_pROM gowin_prom (
          .clk(i_clk),
          .oce(1'b1),
          .ce(1'b1),
