@@ -128,3 +128,13 @@
 ## 参考
 このプロジェクトでは、コマンドおよびデータ送信のタイミングの参考として、
 MITライセンスで公開されている [rdagger/micropython-ili9341](https://github.com/rdagger/micropython-ili9341) の `ili9341.py` を参照しました。
+
+また、ペテルセングラフの描画に用いた **Bresenhamのアルゴリズム** も同ファイル内の実装を参考にしています。
+
+## Qiita記事
+
+本プロジェクトの詳細や実装解説は、以下のQiita記事でも紹介しています。  
+
+→ [FPGAでILI9341搭載2.8インチLCDを制御（前編）](https://qiita.com/BruCandy/items/da79328ff94775c80c61)
+
+→ [FPGAでILI9341搭載2.8インチLCDを制御（後編）](https://qiita.com/BruCandy/items/c24610f12f4f1cba07da)
